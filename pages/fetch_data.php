@@ -1,14 +1,8 @@
 <?php
-include('../includes/db.php'); // Incluye db.php desde la carpeta incluye
+include('../includes/db.php'); // Incluye db.php desde la carpeta includes
 
 // Configurar el encabezado para JSON
 header('Content-Type: application/json');
-
-// Verificar conexión a la base de datos
-if ($conn->connect_error) {
-    echo json_encode(['error' => 'Conexión fallida: ' . $conn->connect_error]);
-    exit;
-}
 
 // Obtener cédula de la solicitud
 $dni = $_GET['dni'] ?? '';
