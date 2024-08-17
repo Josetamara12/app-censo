@@ -34,6 +34,8 @@ if (!isset($_SESSION['username'])) {
                         <a href="exportar_excel.php" class="list-group-item list-group-item-action">Exportar Datos a Excel</a>
                         <a href="logout.php" class="list-group-item list-group-item-action text-danger">Cerrar Sesión</a>
                     </div>
+                    <!-- Espacio para mostrar los horarios -->
+                    <div id="horariosCenso" class="mt-4"></div>
                 </div>
             </div>
         </div>
@@ -42,5 +44,7 @@ if (!isset($_SESSION['username'])) {
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Script Externo -->
+<script src="includes/script.js"></script>
 </body>
 </html>
