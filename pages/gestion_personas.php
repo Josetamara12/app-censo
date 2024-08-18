@@ -81,50 +81,42 @@ $result = executeQuery($conn, $sql, [], true);
                     <h2>Gestión de Personas</h2>
                 </div>
                 <div class="card-body">
-                    
-                    <!-- Mostrar datos -->
-                    <?php if ($result->num_rows > 0): ?>
-                        <h4>Lista de Personas</h4>
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Cédula</th>
-                                    <th>Nombre</th>
-                                    <th>Fecha de Nacimiento</th>
-                                    <th>Dirección</th>
-                                    <th>Teléfono</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php while($row = $result->fetch_assoc()): ?>
-                                    <tr>
-                                        <td><?php echo htmlspecialchars($row['DNI']); ?></td>
-                                        <td><?php echo htmlspecialchars($row['NOMBRE']); ?></td>
-                                        <td><?php echo htmlspecialchars((new DateTime($row['FECNAC']))->format('d-m-Y')); ?></td>
-                                        <td><?php echo htmlspecialchars($row['DIR']); ?></td>
-                                        <td><?php echo htmlspecialchars($row['TFNO']); ?></td>
-                                    </tr>
-                                <?php endwhile; ?>
-                            </tbody>
-                        </table>
-                    <?php else: ?>
-                        <p class="text-center">No hay datos disponibles.</p>
-                    <?php endif; ?>
-                    <!-- Botón para regresar al menú -->
-                    <a href="menu.php" class="btn btn-primary mb-3">Volver al Menú</a>
+    <h4>Lista de Personas</h4>
+<!-- Tabla de Datos -->
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Cédula</th>
+            <th>Nombre</th>
+            <th>Fecha de Nacimiento</th>
+            <th>Dirección</th>
+            <th>Teléfono</th>
+            <th class="text-left">Opciones</th> <!-- Alineación a la derecha -->
+        </tr>
+    </thead>
+    <tbody id="personasTableBody">
 
-                    <!-- Botones para abrir modales -->
-                    <div class="mb-3">
-                        <button type="button" class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#insertModal">Agregar Persona</button>
-                        <button type="button" class="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#updateModal">Actualizar Persona</button>
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Eliminar Persona</button>
-                    </div>
+     <!-- Botón para abrir el modal de agregar -->
+     <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#insertModal">Agregar Persona</button>
+        <?php while($row = $result->fetch_assoc()): ?>
+        <tr data-id="<?= $row['DNI'] ?>">
+            <td><?= htmlspecialchars($row['DNI']) ?></td>
+            <td><?= htmlspecialchars($row['NOMBRE']) ?></td>
+            <td><?= htmlspecialchars(date('d-m-Y', strtotime($row['FECNAC']))) ?></td>
+            <td><?= htmlspecialchars($row['DIR']) ?></td>
+            <td><?= htmlspecialchars($row['TFNO']) ?></td>
+            <td class="text-end">
+                //botones
+                <button type="button" class="btn btn-warning btn-sm me-2 btn-edit" data-id="<?= $row['DNI'] ?>">Editar</button>
+                <button type="button" class="btn btn-danger btn-sm btn-delete" data-id="<?= $row['DNI'] ?>">Eliminar</button>
+            </td>
+        </tr>
+        <?php endwhile; ?>
+    </tbody>
+</table>
 
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+    <!-- Botón para regresar al menú -->
+    <a href="menu.php" class="btn btn-primary mb-3">Volver al Menú</a>
 
 <!-- Modal para Insertar Datos -->
 <div class="modal fade" id="insertModal" tabindex="-1" aria-labelledby="insertModalLabel" aria-hidden="true">
@@ -138,10 +130,10 @@ $result = executeQuery($conn, $sql, [], true);
                 <form method="post">
                     <div class="mb-3">
                         <label for="insert_dni" class="form-label">Cédula:</label>
-                        <input type="text" class="form-control" id="insert_dni" name="dni" required>
+                        <input type="number" class="form-control" id="insert_dni" name="dni" required>
                     </div>
                     <div class="mb-3">
-                        <label for="insert_nombre" class="form-label">Nombre:</label>
+                        <label for="insert_nombre" class="form-label">Nombre y Apellido:</label>
                         <input type="text" class="form-control" id="insert_nombre" name="nombre" required>
                     </div>
                     <div class="mb-3">
@@ -154,7 +146,7 @@ $result = executeQuery($conn, $sql, [], true);
                     </div>
                     <div class="mb-3">
                         <label for="insert_tfno" class="form-label">Teléfono:</label>
-                        <input type="text" class="form-control" id="insert_tfno" name="tfno" required>
+                        <input type="number" class="form-control" id="insert_tfno" name="tfno" required>
                     </div>
                     <button type="submit" name="insert" class="btn btn-success">Agregar</button>
                 </form>
@@ -174,12 +166,11 @@ $result = executeQuery($conn, $sql, [], true);
             <div class="modal-body">
                 <form id="updateForm" method="post">
                     <div class="mb-3">
-                        <label for="update_dni" class="form-label">Digita Numero de Cedula:</label>
-                        <input type="text" class="form-control" id="update_dni" name="upd_dni" required>
-                        <button type="button" id="fetchDataBtn" class="btn btn-info mt-2">Buscar Datos</button>
+                        <label for="update_dni" class="form-label">Cédula (DNI):</label>
+                        <input type="number" class="form-control" id="update_dni" name="cedula" readonly>
                     </div>
                     <div class="mb-3">
-                        <label for="update_nombre" class="form-label">Nombre:</label>
+                        <label for="update_nombre" class="form-label">Nombre y Apellido:</label>
                         <input type="text" class="form-control" id="update_nombre" name="nombre">
                     </div>
                     <div class="mb-3">
@@ -192,7 +183,7 @@ $result = executeQuery($conn, $sql, [], true);
                     </div>
                     <div class="mb-3">
                         <label for="update_tfno" class="form-label">Teléfono:</label>
-                        <input type="text" class="form-control" id="update_tfno" name="tfno">
+                        <input type="number" class="form-control" id="update_tfno" name="tfno">
                     </div>
                     <button type="submit" name="update" class="btn btn-warning">Actualizar</button>
                 </form>
@@ -200,6 +191,9 @@ $result = executeQuery($conn, $sql, [], true);
         </div>
     </div>
 </div>
+
+
+
 
 <!-- Modal para Eliminar Datos -->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -225,6 +219,10 @@ $result = executeQuery($conn, $sql, [], true);
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Incluye el archivo de script externo -->
+
+<!-- Bootstrap Bundle with Popper -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
 <script src="../includes/script.js"></script>
 </body>
 </html>
