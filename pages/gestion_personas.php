@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('../includes/db.php'); // Incluye db.php desde la carpeta incluye
+include('../includes/db.php'); // Incluye db.php desde la carpeta includes
 
 // Verificar si el usuario ha iniciado sesión
 if (!isset($_SESSION['username'])) {
@@ -14,15 +14,23 @@ if ($conn->connect_error) {
 }
 
 // Función para ejecutar una consulta SQL
+// Función para ejecutar una consulta SQL
 function executeQuery($conn, $sql, $params = [], $fetch = false) {
     $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        die("Error al preparar la consulta: " . $conn->error);
+    }
     if ($params) {
         $types = str_repeat('s', count($params)); // Tipo 's' para strings, ajustar si usas otros tipos
         $stmt->bind_param($types, ...$params);
     }
     $stmt->execute();
     if ($fetch) {
-        return $stmt->get_result();
+        $result = $stmt->get_result();
+        if (!$result) {
+            die("Error al obtener el resultado: " . $stmt->error);
+        }
+        return $result;
     }
     return $stmt->affected_rows;
 }
@@ -61,6 +69,7 @@ $result = executeQuery($conn, $sql, [], true);
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -71,13 +80,15 @@ $result = executeQuery($conn, $sql, [], true);
         .modal-dialog { max-width: 800px; }
     </style>
 </head>
+
+
 <body class="bg-light">
 
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="card">
-                <div class="card-header text-center">
+                <div class="card-header text-center bg-primary text-white">
                     <h2>Gestión de Personas</h2>
                 </div>
                 <div class="card-body">
@@ -91,7 +102,7 @@ $result = executeQuery($conn, $sql, [], true);
             <th>Fecha de Nacimiento</th>
             <th>Dirección</th>
             <th>Teléfono</th>
-            <th class="text-left">Opciones</th> <!-- Alineación a la derecha -->
+            <th class="text-center">Opciones</th> <!-- Alineación a la derecha -->
         </tr>
     </thead>
     <tbody id="personasTableBody">
@@ -118,6 +129,7 @@ $result = executeQuery($conn, $sql, [], true);
     <!-- Botón para regresar al menú -->
     <a href="menu.php" class="btn btn-primary mb-3">Volver al Menú</a>
 
+    
 <!-- Modal para Insertar Datos -->
 <div class="modal fade" id="insertModal" tabindex="-1" aria-labelledby="insertModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -193,28 +205,26 @@ $result = executeQuery($conn, $sql, [], true);
 </div>
 
 
-
-
-<!-- Modal para Eliminar Datos -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+<<!-- Modal de Confirmación de Eliminación -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Eliminar Persona</h5>
+                <h5 class="modal-title" id="deleteConfirmModalLabel">Confirmar Eliminación</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="post">
-                    <div class="mb-3">
-                        <label for="delete_dni" class="form-label">Cédula para Eliminar:</label>
-                        <input type="text" class="form-control" id="delete_dni" name="dni" required>
-                    </div>
-                    <button type="submit" name="delete" class="btn btn-danger">Eliminar</button>
-                </form>
+                ¿Estás seguro de que deseas eliminar este registro?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" id="confirmDeleteButton" class="btn btn-danger">Eliminar</button>
             </div>
         </div>
     </div>
 </div>
+
+
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -1,5 +1,5 @@
 <?php
-include('../includes/db.php'); // Incluye db.php desde la carpeta incluye
+include('../includes/db.php'); // Incluye db.php 
 
 header('Content-Type: application/json');
 

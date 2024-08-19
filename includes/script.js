@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const tableBody = document.querySelector('.table tbody');
     const updateForm = document.getElementById('updateForm');
+   
 
     function obtenerDatosTabla() {
         return fetch('../pages/fetch_table_data.php')
@@ -58,16 +59,45 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateModal.show();
             });
         });
+
         
         // Añadir el event listener para los botones de eliminar
         document.querySelectorAll('.btn-delete').forEach(button => {
             button.addEventListener('click', () => {
-                const dni = button.getAttribute('data-dni');
-                // Manejar la eliminación aquí
-                console.log(`Eliminar DNI: ${dni}`);
+                dniToDelete = button.getAttribute('data-dni');
+
+                // Mostrar el modal de confirmación
+                const deleteConfirmModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+                deleteConfirmModal.show();
             });
         });
     }
+        // Manejar la confirmación de eliminación
+    document.getElementById('confirmDeleteButton').addEventListener('click', () => {
+        if (dniToDelete) {
+            const formData = new FormData();
+            formData.append('dni', dniToDelete);
+
+            fetch('../pages/eliminar_data.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const deleteConfirmModal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal'));
+                    deleteConfirmModal.hide();
+                    obtenerDatosTabla(); // Recargar los datos de la tabla
+                } else {
+                    alert(data.error || 'No se pudo eliminar el registro.');
+                }
+            })
+            .catch(error => {
+                console.error('Error eliminando el registro:', error);
+            });
+        }
+    });
+    
 
     // Manejo del formulario de actualización
     if (updateForm) {
@@ -111,4 +141,27 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // ...
+        document.querySelector('#horariosCenso button').addEventListener('click', function() {
+            // Realiza la solicitud al servidor
+            fetch('obtener_horarios.php')
+                .then(response => response.text()) // Espera el contenido HTML
+                .then(html => {
+                    // Inserta el HTML en el contenedor
+                    document.querySelector('#horariosCenso').innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Error al obtener los horarios:', error);
+                });
+        });
+    
+        // ...
+    });
+    
+
+    
 });
