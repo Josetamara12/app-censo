@@ -44,7 +44,7 @@ $horarios = [
                         <tbody>
                             <?php foreach ($horarios as $horario): ?>
                                 <tr>
-                                    <td class="text-center"><?php echo htmlspecialchars($horario['dia']); ?></td>
+                                    <td class="text"><?php echo htmlspecialchars($horario['dia']); ?></td>
                                     <td class="text-center"><?php echo htmlspecialchars($horario['horario']); ?></td>
                                 </tr>
                             <?php endforeach; ?>

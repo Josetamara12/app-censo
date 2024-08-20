@@ -36,5 +36,6 @@ if ($dni && $nombre && $fecnac && $dir && $tfno) {
     echo json_encode(['error' => 'Datos incompletos.']);
 }
 
+
 $conn->close();
 ?>

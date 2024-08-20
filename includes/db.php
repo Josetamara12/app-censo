@@ -14,6 +14,5 @@ if ($conn->connect_error) {
     die("Conexión fallida: " . $conn->connect_error);
 }
 
-// Puedes añadir más código aquí para trabajar con la base de datos
 
 ?>
