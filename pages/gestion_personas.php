@@ -93,6 +93,7 @@ $result = executeQuery($conn, $sql, [], true);
                 </div>
                 <div class="card-body">
     <h4>Lista de Personas</h4>
+
 <!-- Tabla de Datos -->
 <table class="table table-striped">
     <thead>
@@ -107,8 +108,9 @@ $result = executeQuery($conn, $sql, [], true);
     </thead>
     <tbody id="personasTableBody">
 
-     <!-- Botón para abrir el modal de agregar -->
-     <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#insertModal">Agregar Persona</button>
+    <!-- Botón para abrir el modal de agregar -->
+    <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#insertModal">Agregar Persona</button>
+        <!-- Los resultados de la búsqueda se llenarán aquí -->
         <?php while($row = $result->fetch_assoc()): ?>
         <tr data-id="<?= $row['DNI'] ?>">
             <td><?= htmlspecialchars($row['DNI']) ?></td>
@@ -117,7 +119,6 @@ $result = executeQuery($conn, $sql, [], true);
             <td><?= htmlspecialchars($row['DIR']) ?></td>
             <td><?= htmlspecialchars($row['TFNO']) ?></td>
             <td class="text-end">
-                //botones
                 <button type="button" class="btn btn-warning btn-sm me-2 btn-edit" data-id="<?= $row['DNI'] ?>">Editar</button>
                 <button type="button" class="btn btn-danger btn-sm btn-delete" data-id="<?= $row['DNI'] ?>">Eliminar</button>
             </td>
@@ -126,8 +127,9 @@ $result = executeQuery($conn, $sql, [], true);
     </tbody>
 </table>
 
+
     <!-- Botón para regresar al menú -->
-    <a href="menu.php" class="btn btn-primary mb-3">Volver al Menú</a>
+    <a href="menu.php" class="btn btn-primary mb-3"> Volver al Menú </a>
 
     
 <!-- Modal para Insertar Datos -->

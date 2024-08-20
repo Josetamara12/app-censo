@@ -50,10 +50,14 @@ $horarios = [
                             <?php endforeach; ?>
                         </tbody>
                     </table>
+                     <!-- Botón para regresar al menú -->
+                    <a href="menu.php" class="btn btn-primary mb-3">Volver al Menú</a>
                 </div>
             </div>
         </div>
     </div>
+
+   
 
     <!-- Enlace a Bootstrap JS desde el CDN para funcionalidades interactivas -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

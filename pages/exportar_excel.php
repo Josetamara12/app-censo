@@ -6,16 +6,17 @@ if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit();
 }
-
-require 'vendor/autoload.php'; // Asegúrate de que Composer haya creado el archivo autoload.php
+// Incluir las clases de PhpSpreadsheet manualmente
+require '../phpspreadsheet/src/PhpSpreadsheet/Spreadsheet.php';
+require '../phpspreadsheet/src/PhpSpreadsheet/Writer/Xlsx.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-$servername = "localhost"; // Cambia esto por tu servidor
-$username = "root"; // Cambia esto por tu nombre de usuario de MySQL
-$password = ""; // Cambia esto por tu contraseña de MySQL
-$dbname = "censa_db"; // Cambia esto por el nombre de tu base de datos
+$servername = "localhost"; 
+$username = "root"; 
+$password = ""; 
+$dbname = "censa_db"; 
 
 // Crear conexión con la base de datos
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -53,7 +54,7 @@ if ($result->num_rows > 0) {
     }
 
     // Establecer el nombre del archivo y exportar
-    $filename = "exported_data_" . date('Ymd_His') . ".xlsx";
+    $filename = "ListadoPersonas_" . date('Ymd_His') . ".xlsx";
     $writer = new Xlsx($spreadsheet);
     
     // Redirigir la salida del navegador al archivo
