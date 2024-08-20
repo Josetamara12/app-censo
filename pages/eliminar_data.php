@@ -1,29 +1,24 @@
 <?php
-// Verifica que la solicitud sea de tipo POST antes de procesar los datos.
-// Esto asegura que el script solo maneje solicitudes legítimas que deben modificar el estado del servidor.
+// Verificamos que la solicitud sea de tipo POST antes de procesar los datos.
+// aseguramos que solo maneje solicitudes legítimas que deben modificar el estado del servidor.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
-    // Incluir el archivo de conexión a la base de datos.
-    // Es una buena práctica separar la lógica de conexión en un archivo aparte.
+    // Incluimos el archivo de conexión a la base de datos.
     require '../includes/db.php'; 
 
-    // Obtiene el valor de 'dni' enviado a través de la solicitud POST.
-    // No hay validación adicional en este punto, pero podrías considerar validarlo para asegurarte de que sea un formato válido.
+    // Obtenemos el valor de 'dni' enviado a través de la solicitud POST.
     $dni = $_POST['dni'];
 
-    // Verifica que el campo 'dni' no esté vacío antes de intentar eliminar el registro.
-    // Esto previene intentos de eliminación con un DNI vacío, lo cual no tendría sentido.
+    // Verificamos que el campo 'dni' no esté vacío antes de intentar eliminar el registro.
     if (!empty($dni)) {
         
-        // Prepara una consulta SQL para eliminar un registro en la tabla 'tbl_personas' donde el DNI coincida.
-        // Usar sentencias preparadas (prepared statements) ayuda a prevenir inyecciones SQL.
+        // Preparamos una consulta SQL para eliminar un registro en la tabla 'tbl_personas' donde el DNI coincida.
         $stmt = $conn->prepare('DELETE FROM tbl_personas WHERE DNI = ?');
         
-        // Asigna el valor del DNI al parámetro de la consulta preparada.
-        // Aquí se usa 's' para indicar que el parámetro es de tipo string.
+        // Asignamos el valor del DNI al parámetro de la consulta preparada.
         $stmt->bind_param('s', $dni);
         
-        // Ejecuta la consulta y verifica si fue exitosa.
+        // Ejecutamos la consulta y verifica si fue exitosa.
         // Si es exitosa, se devuelve una respuesta JSON indicando éxito.
         if ($stmt->execute()) {
             echo json_encode(['success' => true]);
@@ -40,7 +35,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Cierra la conexión a la base de datos después de completar la operación.
-    // Siempre es importante cerrar la conexión para evitar sobrecargar el servidor.
     $conn->close();
 } else {
     // Si la solicitud no es de tipo POST, se devuelve un error indicando que el método de solicitud no es válido.

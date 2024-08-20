@@ -1,4 +1,7 @@
 <?php
+
+//Este código es una aplicación web en PHP que permite gestionar una lista de personas, 
+//realizando operaciones de inserción, actualización, eliminación y visualización de datos en una base de datos MySQL.
 session_start();
 include('../includes/db.php'); // Incluye db.php desde la carpeta includes
 
@@ -13,7 +16,6 @@ if ($conn->connect_error) {
     die("Conexión fallida: " . $conn->connect_error);
 }
 
-// Función para ejecutar una consulta SQL
 // Función para ejecutar una consulta SQL
 function executeQuery($conn, $sql, $params = [], $fetch = false) {
     $stmt = $conn->prepare($sql);
@@ -83,7 +85,6 @@ $result = executeQuery($conn, $sql, [], true);
 
 
 <body class="bg-light">
-
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-10">
@@ -110,7 +111,8 @@ $result = executeQuery($conn, $sql, [], true);
 
     <!-- Botón para abrir el modal de agregar -->
     <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#insertModal">Agregar Persona</button>
-        <!-- Los resultados de la búsqueda se llenarán aquí -->
+       
+    <!-- Los resultados de la búsqueda se llenarán aquí -->
         <?php while($row = $result->fetch_assoc()): ?>
         <tr data-id="<?= $row['DNI'] ?>">
             <td><?= htmlspecialchars($row['DNI']) ?></td>
@@ -126,7 +128,6 @@ $result = executeQuery($conn, $sql, [], true);
         <?php endwhile; ?>
     </tbody>
 </table>
-
 
     <!-- Botón para regresar al menú -->
     <a href="menu.php" class="btn btn-primary mb-3"> Volver al Menú </a>
